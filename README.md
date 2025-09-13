@@ -103,10 +103,4 @@ MIT License
 
 ---
 
-Let me know if you’d like me to:
 
-* Add **badges** (e.g. Render deployed, Python version)
-* Include a **screenshot** section
-* Add **sample questions and transcripts**
-
-Just say the word!
