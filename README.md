@@ -40,7 +40,7 @@ An AI-driven Streamlit application to simulate real-time Excel interviews, evalu
 * **Frontend**: [Streamlit](https://streamlit.io/)
 * **Backend AI**: [OpenAI GPT-4o-mini](https://openai.com/)
 * **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-* **Deployment**: [Render](https://render.com/) | (Also compatible with [GCP Cloud Run](https://cloud.google.com/run))
+* **Deployment**: [Render](https://render.com/)
 
 ---
 
