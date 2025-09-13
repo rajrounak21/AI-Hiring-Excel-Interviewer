@@ -31,7 +31,6 @@ An AI-driven Streamlit application to simulate real-time Excel interviews, evalu
 ├── excel_questions.csv      # Question bank (loaded at runtime)
 ├── requirements.txt         # Python dependencies
 ├── .env                     # [Only for local development]
-└── Dockerfile               # For containerized deployments
 ```
 
 ---
