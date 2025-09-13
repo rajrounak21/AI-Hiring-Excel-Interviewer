@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import uuid
 from pymongo import MongoClient
-import streamlit.components.v1 as components
 from datetime import datetime
 import openai
 import json
@@ -10,30 +9,17 @@ import re
 import os
 import time
 from dotenv import load_dotenv
+
+# ----------------- Load environment variables -----------------
 load_dotenv()
 uri = os.getenv("MONGODB_URI")
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_KEY_API")
+
 # ----------------- MongoDB Setup -----------------
 client = MongoClient(uri)
-OPENAI_API_KEY=os.getenv("OPENAI_KEY_API")
 db = client["mock_interview"]
 questions_col = db["interview_questions"]
 sessions_col = db["sessions"]
-# ----------------- Disable Copy-Paste -----------------
-def secure_textarea(label, key, initial_value=""):
-    components.html(f"""
-        <textarea id="{key}" rows="5" style="width: 100%; font-size: 16px;" 
-            onpaste="event.preventDefault();" 
-            oncopy="event.preventDefault();" 
-            oncut="event.preventDefault();" 
-            oninput="window.parent.postMessage({{ type: 'syncAnswer', key: '{key}', value: this.value }}, '*');">
-        {initial_value}
-        </textarea>
-        <script>
-            const textarea = document.getElementById("{key}");
-            textarea.onpaste = e => {{ e.preventDefault(); alert("🚫 Copy-Paste is disabled."); }};
-        </script>
-    """, height=150)
 
 # ----------------- Show Greetings -----------------
 def show_greetings():
@@ -131,7 +117,29 @@ elif not st.session_state.evaluation_done:
             "user_answer": {"$ne": None}
         }))
 
-        prompt = "You are an Excel interviewer. ONLY return a JSON array. For each question, compare the user's answer to the ideal answer, give score 1-5 and feedback.\n\n"
+        prompt = """
+        You are an expert Excel interviewer evaluating a candidate's responses.
+
+        Compare each **user answer** to the **ideal answer** and determine:
+
+        - Did the user understand the concept?
+        - Is the answer factually correct, even if phrased differently?
+        - Does it address the key points expected in the ideal answer?
+
+        ⚠️ Do NOT penalize for different wording or lack of examples, unless examples are essential.
+
+        Return output in this JSON format:
+
+        [
+          {
+            "question": "string",
+            "score": 1-5,
+            "feedback": "short but specific explanation of strengths or missing points"
+          }
+        ]
+
+        Data:
+        """
         for i, q in enumerate(answered_questions, 1):
             prompt += f"Q{i}:\nQuestion: {q['question']}\nIdeal Answer: {q['ideal_answer']}\nUser Answer: {q['user_answer']}\n"
 
@@ -187,3 +195,4 @@ elif st.session_state.evaluation_done:
     **Thank you for participating!** 🙏  
     **We wish you the best in your journey ahead.** 🚀
     """)
+
